@@ -28,6 +28,11 @@ public class GoalService {
     private final TransactionRepository transactionRepository;
     private final UserRepository userRepository;
 
+    private BigDecimal formatFinancial(BigDecimal val) {
+        if (val.compareTo(BigDecimal.ZERO) == 0) return BigDecimal.ZERO;
+        return val.setScale(2, RoundingMode.HALF_UP);
+    }
+
     @Transactional
     public GoalResponse createGoal(Long userId, GoalCreateRequest request) {
         // Defaults to creation date if not provided
@@ -140,9 +145,9 @@ public class GoalService {
                 goal.getTargetAmount().setScale(2, RoundingMode.HALF_UP),
                 goal.getTargetDate(),
                 goal.getStartDate(),
-                progress.setScale(2, RoundingMode.HALF_UP),
+                formatFinancial(progress),
                 percentage,
-                remaining.setScale(2, RoundingMode.HALF_UP)
+                formatFinancial(remaining)
         );
     }
 }

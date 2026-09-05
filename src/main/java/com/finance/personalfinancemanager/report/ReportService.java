@@ -24,6 +24,11 @@ public class ReportService {
 
     private final TransactionRepository transactionRepository;
 
+    private BigDecimal formatFinancial(BigDecimal val) {
+        if (val.compareTo(BigDecimal.ZERO) == 0) return BigDecimal.ZERO;
+        return val.setScale(2, RoundingMode.HALF_UP);
+    }
+
     @Transactional(readOnly = true)
     public MonthlyReportResponse getMonthlyReport(Long userId, int year, int month) {
         if (month < 1 || month > 12) {
@@ -74,7 +79,7 @@ public class ReportService {
                 year,
                 normalize(income),
                 normalize(expense),
-                netSavings.setScale(2, RoundingMode.HALF_UP)
+                formatFinancial(netSavings)
         );
     }
 
@@ -106,7 +111,7 @@ public class ReportService {
                 year,
                 normalize(income),
                 normalize(expense),
-                netSavings.setScale(2, RoundingMode.HALF_UP)
+                formatFinancial(netSavings)
         );
     }
 

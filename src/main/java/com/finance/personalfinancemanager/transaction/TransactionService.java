@@ -77,10 +77,6 @@ public class TransactionService {
         boolean hasCategory = StringUtils.hasText(request.category());
         boolean hasDescription = request.description() != null;
 
-        if (!hasAmount && !hasCategory && !hasDescription) {
-            throw new BadRequestException("No valid fields provided for update");
-        }
-
         if (hasAmount) transaction.setAmount(request.amount());
 
         if (hasCategory) {

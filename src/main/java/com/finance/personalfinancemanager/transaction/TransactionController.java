@@ -1,5 +1,7 @@
 package com.finance.personalfinancemanager.transaction;
 
+import com.finance.personalfinancemanager.category.Category;
+import com.finance.personalfinancemanager.category.CategoryRepository;
 import com.finance.personalfinancemanager.transaction.dto.TransactionCreateRequest;
 import com.finance.personalfinancemanager.transaction.dto.TransactionResponse;
 import com.finance.personalfinancemanager.transaction.dto.TransactionUpdateRequest;
@@ -29,6 +31,7 @@ import java.util.Map;
 public class TransactionController {
 
     private final TransactionService transactionService;
+    private final CategoryRepository categoryRepository;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -41,8 +44,19 @@ public class TransactionController {
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
             @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) String category,
             @RequestParam(required = false) String type
     ) {
+        Long userId = SecurityUtils.getCurrentUserId();
+
+        // Fallback: if script sends category name instead of ID
+        if (categoryId == null && category != null && !category.trim().isEmpty()) {
+            Category cat = categoryRepository.findAccessibleByName(category.trim(), userId).orElse(null);
+            if (cat != null) {
+                categoryId = cat.getId();
+            }
+        }
+
         return Map.of("transactions", transactionService.getTransactions(
                 SecurityUtils.getCurrentUserId(), startDate, endDate, categoryId, type
         ));
