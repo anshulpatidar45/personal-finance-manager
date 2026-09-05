@@ -71,7 +71,8 @@ Run tests with coverage:
 ## 🌐 Deployment
 
 The application is deployed on Render and accessible at:
-`[INSERT YOUR RENDER URL HERE]/api`
+[https://onrender.com](https://personal-finance-manager-jmm8.onrender.com/)
+
 
 ## 📂 Project Structure
 
